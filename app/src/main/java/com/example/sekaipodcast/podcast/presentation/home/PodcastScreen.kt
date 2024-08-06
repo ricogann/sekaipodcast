@@ -38,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.sekaipodcast.R
 import com.example.sekaipodcast.SetStatusBarColor
+import com.example.sekaipodcast.common.Constants
 import com.example.sekaipodcast.player.service.Music
 import com.example.sekaipodcast.player.service.PlayerHandlers
 import com.example.sekaipodcast.podcast.presentation.home.components.AboutPodcast
@@ -45,18 +46,31 @@ import com.example.sekaipodcast.podcast.presentation.home.components.CardComment
 import com.example.sekaipodcast.podcast.presentation.home.components.Podcast
 import com.example.sekaipodcast.ui.theme.SekaipodcastTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PodcastScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
-    valueSlider: Float,
-    onValueSliderChange: (Float) -> Unit,
-    onValueChangeFinished: () -> Unit,
-    songDuration: Float,
-    onPlayPause: () -> Unit,
-    isPlaying: Boolean,
-    onDismiss: () -> Unit
+    viewModel: PodcastViewModel = hiltViewModel()
 ) {
     SetStatusBarColor(color = Color.White)
+    val playlist = listOf(
+        Music(
+            name = "Master Of Puppets",
+            artist = "Metallica",
+            music = R.raw.master_of_puppets,
+            url = "${Constants.BASE_URL_DEV}/v1/podcast/file/testing.mp3"
+        )
+    )
+
+
+    viewModel.initPlayer(playlist)
+
+    val pagerState = rememberPagerState(pageCount = { playlist.count() })
+
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.onPageChange(pagerState.currentPage)
+    }
 
     Column(
         modifier = modifier
@@ -72,7 +86,7 @@ fun PodcastScreen(
             contentAlignment = Alignment.Center
         ) {
             IconButton(
-                onClick = { onDismiss() },
+                onClick = { },
                 modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(
@@ -108,19 +122,16 @@ fun PodcastScreen(
             ) {
                 item {
                     Podcast(
-                        modifier = Modifier.clickable {
-
-                        },
-                        valueSlider = valueSlider,
+                        valueSlider = viewModel.sliderPosition.toFloat(),
                         onValueSliderChange = { newValue ->
-                            onValueSliderChange(newValue)
+                            viewModel.seekTo(newValue.toLong())
                         },
                         onValueChangeFinished = {
-                            onValueChangeFinished()
+                            viewModel.seekTo(viewModel.sliderPosition)
                         },
-                        songDuration = songDuration,
-                        onPlayPause = { onPlayPause() },
-                        isPlaying = isPlaying
+                        songDuration = viewModel.totalDuration.toFloat(),
+                        onPlayPause = { viewModel.playPause() },
+                        isPlaying = viewModel.isPlaying
                     )
                     SpacerVertical(30.dp)
                     AboutPodcast()

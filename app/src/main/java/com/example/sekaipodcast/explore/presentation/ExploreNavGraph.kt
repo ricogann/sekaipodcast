@@ -24,7 +24,7 @@ fun ExploreNavGraph(
             SearchScreen(navController)
         }
         composable(Route.PodcastScreen.route) {
-//            PodcastScreen(navController)
+            PodcastScreen(navController)
         }
 //        composable(Route.UserScreen.route) {
 //            UserScreen(navController)

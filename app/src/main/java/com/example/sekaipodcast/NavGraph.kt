@@ -95,30 +95,13 @@ data class BottomNavigationItem(
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavGraph(
     startDestination: String,
-    viewModel: PodcastViewModel = hiltViewModel()
 ) {
-    val isPlaying = remember { mutableStateOf(false) }
     val navController = rememberNavController()
-    var showDialog by remember { mutableStateOf(false) }
-    val playlist = listOf(
-        Music(
-            name = "Master Of Puppets",
-            artist = "Metallica",
-            music = R.raw.master_of_puppets,
-            url = "${Constants.BASE_URL_DEV}/v1/podcast/file/testing.mp3"
-        )
-    )
-    viewModel.initPlayer(playlist)
 
-    val pagerState = rememberPagerState(pageCount = { playlist.count() })
-
-    LaunchedEffect(pagerState.currentPage) {
-        viewModel.onPageChange(pagerState.currentPage)
-    }
 
     val items = listOf(
         BottomNavigationItem(
@@ -168,13 +151,6 @@ fun NavGraph(
                 currentRoute != Route.OnBoardingScreen.route
                 ) {
                 Column {
-                    if (
-                        currentRoute != Route.AddEditPodcastScreen.route
-                    ) {
-                        FloatingPodcast(showPodcast = {
-                            showDialog = true
-                        })
-                    }
                     Spacer(modifier = Modifier.height(4.dp))
                     NavigationBar (
                         containerColor = Color.White,
@@ -245,125 +221,6 @@ fun NavGraph(
             }
             composable(Route.ExploreScreen.route) {
                 ExploreNavGraph(startDestination = Route.ExploreScreen.route)
-            }
-        }
-    }
-
-    if (showDialog) {
-        FullScreenPodcastDialog(
-            valueSlider = viewModel.sliderPosition.toFloat(),
-            onValueSliderChange = { newValue ->
-                viewModel.seekTo(newValue.toLong())
-            },
-            onValueChangeFinished = {
-                viewModel.seekTo(viewModel.sliderPosition)
-            },
-            songDuration = viewModel.totalDuration.toFloat(),
-            onPlayPause = { viewModel.playPause() },
-            isPlaying = viewModel.isPlaying
-        ) {
-            showDialog = false
-        }
-    }
-}
-
-@Composable
-fun FloatingPodcast(
-    modifier: Modifier = Modifier,
-    showPodcast: () -> Unit
-) {
-    Row (
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 5.dp, end = 5.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color(0xFFFF8673), shape = RoundedCornerShape(8.dp))
-            .padding(10.dp)
-            .clickable {
-                showPodcast()
-            },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val painter = painterResource(id = R.drawable.dummy)
-        Row (
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(5.dp)),
-                painter = painter,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Column {
-                Text(
-                    text = "Life in Spain - Part 1",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Rico Putra Anugerah",
-                    fontSize = 8.sp
-                )
-            }
-        }
-        Row {
-            Icon(
-                imageVector = Icons.Default.FavoriteBorder,
-                contentDescription = "Edit",
-                tint = Color.Black,
-                modifier = Modifier.size(25.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Edit",
-                tint = Color.Black,
-                modifier = Modifier.size(25.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun FullScreenPodcastDialog(
-    valueSlider: Float,
-    onValueSliderChange: (Float) -> Unit,
-    onValueChangeFinished: () -> Unit,
-    songDuration: Float,
-    onPlayPause: () -> Unit,
-    isPlaying: Boolean,
-    onDismiss: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-        .fillMaxSize()
-    ) {
-        Dialog(
-            onDismissRequest = { onDismiss() },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-            ) {
-                PodcastScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    valueSlider = valueSlider,
-                    onValueSliderChange = onValueSliderChange,
-                    onValueChangeFinished = onValueChangeFinished,
-                    songDuration = songDuration,
-                    onPlayPause = onPlayPause,
-                    isPlaying = isPlaying,
-                    onDismiss = { onDismiss() }
-                )
             }
         }
     }
