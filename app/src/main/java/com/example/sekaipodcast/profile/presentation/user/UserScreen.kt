@@ -70,6 +70,7 @@ fun UserScreen(
 
     val followStatus = viewModel.followStatus
     val dataUser = viewModel.user
+    val podcasts = viewModel.podcasts
 
     val sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
@@ -171,14 +172,17 @@ fun UserScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-            items(4) {
-                Spacer(modifier = Modifier.height(12.dp))
-                CardPodcast(
-                    modifier = Modifier.clickable {
-                        navController.navigate(Route.PodcastScreen.route)
-                    }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+            if (podcasts != null) {
+                items(podcasts.size) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    CardPodcast(
+                        podcast = podcasts[it],
+                        modifier = Modifier.clickable {
+                            navController.navigate(Route.PodcastScreen.createRoute(podcasts[it].id))
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
 

@@ -95,7 +95,7 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(12.dp))
                     CardPodcast(
                         modifier = Modifier.clickable {
-                            navController.navigate(Route.PodcastScreen.route)
+                            navController.navigate(Route.PodcastScreen.createRoute(podcasts[it].id))
                         },
                         podcasts[it],
                         onDelete = {

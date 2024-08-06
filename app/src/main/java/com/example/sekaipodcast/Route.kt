@@ -31,6 +31,8 @@ sealed class Route(
     object ExploreScreen: Route(route = "exploreScreen")
 
     // On Podcast Screen
-    object PodcastScreen: Route(route = "podcastScreen")
+    object PodcastScreen: Route(route = "podcastScreen/{podcastId}") {
+        fun createRoute(podcastId: String) = "podcastScreen/$podcastId"
+    }
     object AddEditPodcastScreen: Route(route = "addEditPodcastScreen")
 }

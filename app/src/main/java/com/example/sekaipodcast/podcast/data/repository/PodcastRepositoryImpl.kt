@@ -4,7 +4,10 @@ import android.util.Log
 import com.example.sekaipodcast.podcast.data.remote.dto.ResponseCountry
 import com.example.sekaipodcast.podcast.data.remote.PodcastAPI
 import com.example.sekaipodcast.podcast.data.remote.dto.ResponseAddPodcast
+import com.example.sekaipodcast.podcast.data.remote.dto.ResponseDetailPodcast
 import com.example.sekaipodcast.podcast.data.remote.dto.ResponseLevel
+import com.example.sekaipodcast.podcast.data.remote.dto.ResponseLikePodcast
+import com.example.sekaipodcast.podcast.domain.model.LikePodcast
 import com.example.sekaipodcast.podcast.domain.model.UploadPodcastRequest
 import com.example.sekaipodcast.podcast.domain.repository.PodcastRepository
 import okhttp3.MultipartBody
@@ -21,6 +24,18 @@ class PodcastRepositoryImpl @Inject constructor(
 
     override suspend fun getLevel(): ResponseLevel {
         return api.getLevel()
+    }
+
+    override suspend fun getDetailPodcast(podcastId: String): ResponseDetailPodcast {
+        return api.getDetailPodcast(podcastId)
+    }
+
+    override suspend fun likePodcast(requestBody: LikePodcast): ResponseLikePodcast {
+        return api.likePodcast(requestBody)
+    }
+
+    override suspend fun unlikePodcast(requestBody: LikePodcast): ResponseLikePodcast {
+        return api.unlikePodcast(requestBody)
     }
 
     override suspend fun uploadPodcast(

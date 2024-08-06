@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
@@ -35,23 +36,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.sekaipodcast.R
+import com.example.sekaipodcast.common.Constants
 import com.example.sekaipodcast.ui.theme.SekaipodcastTheme
 
 @Composable
 fun Podcast(
+    title: String,
+    thumbnail: String,
+    name: String,
+    like: Boolean,
     modifier: Modifier = Modifier,
     valueSlider: Float,
     onValueSliderChange: (Float) -> Unit,
     onValueChangeFinished: () -> Unit,
+    onLike: () -> Unit,
+    onUnlike: () -> Unit,
     songDuration: Float,
     onPlayPause: () -> Unit,
     isPlaying: Boolean
 ) {
-    val painter = painterResource(id = R.drawable.dummy)
     Box(
         modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -61,13 +70,12 @@ fun Podcast(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         )  {
-            Image(
+            AsyncImage(
+                model = "${Constants.BASE_URL_DEV}/v1/podcast/thumbnail/${thumbnail}",
+                contentDescription = "logo",
                 modifier = Modifier
                     .size(360.dp)
-                    .clip(RoundedCornerShape(25.dp)),
-                painter = painter,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+                    .clip(RoundedCornerShape(25.dp))
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row (
@@ -77,14 +85,16 @@ fun Podcast(
             ) {
                 Column {
                     Text(
+                        modifier = Modifier.width(250.dp),
+                        text = title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         fontSize = 20.sp,
-                        text = "LIFE IN SPAIN - PART 1",
-                        color = Color.Black,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         fontSize = 15.sp,
-                        text = "Rico Putra Anugerah",
+                        text = name,
                         color = Color.Black,
                     )
                 }
@@ -92,10 +102,16 @@ fun Podcast(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
+                        imageVector = if (like) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Like",
-                        tint = Color.Black,
-                        modifier = Modifier.size(30.dp)
+                        tint = if (like) Color.Red else Color.Black,
+                        modifier = Modifier.size(30.dp).clickable {
+                            if (like) {
+                                onUnlike()
+                            }else {
+                                onLike()
+                            }
+                        }
                     )
                     Icon(
                         imageVector = Icons.Default.AddCircle,

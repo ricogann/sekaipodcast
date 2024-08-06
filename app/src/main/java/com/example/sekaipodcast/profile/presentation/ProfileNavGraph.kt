@@ -24,10 +24,11 @@ fun ProfileNavGraph(
         composable(Route.ProfileScreen.route) {
             ProfileScreen(navController)
         }
-        composable(Route.PodcastScreen.route) {
-            PodcastScreen(navController)
+        composable(Route.PodcastScreen.route) { backStackEntry ->
+            val podcastId = backStackEntry.arguments?.getString("podcastId") ?: return@composable
+            PodcastScreen(navController, podcastId)
         }
-        composable(Route.UserScreen.route) {backStackEntry ->
+        composable(Route.UserScreen.route) { backStackEntry ->
             val profileId = backStackEntry.arguments?.getString("profileId") ?: return@composable
             UserScreen(navController, profileId)
         }

@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.DecodedJWT
-import com.example.sekaipodcast.Route
 import com.example.sekaipodcast.auth.domain.use_case.ReadLoginEntryUseCase
 import com.example.sekaipodcast.common.Resource
 import com.example.sekaipodcast.profile.data.remote.dto.DataMutual

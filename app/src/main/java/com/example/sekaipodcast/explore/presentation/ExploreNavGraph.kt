@@ -23,8 +23,9 @@ fun ExploreNavGraph(
         composable(Route.SearchScreen.route) {
             SearchScreen(navController)
         }
-        composable(Route.PodcastScreen.route) {
-            PodcastScreen(navController)
+        composable(Route.PodcastScreen.route) { backStackEntry ->
+            val podcastId = backStackEntry.arguments?.getString("podcastId") ?: return@composable
+            PodcastScreen(navController, podcastId)
         }
 //        composable(Route.UserScreen.route) {
 //            UserScreen(navController)
