@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -51,13 +52,19 @@ import com.example.sekaipodcast.ui.theme.SekaipodcastTheme
 fun CardPodcast(
     modifier: Modifier = Modifier,
     navController: NavController,
-    podcast: Podcast
+    podcast: Podcast,
+    isPlayShow: Boolean,
+    onAddPodcastToPlaylist: () -> Unit
 ) {
     Row (
         modifier = modifier
             .fillMaxWidth()
             .clickable {
-               navController.navigate(Route.PodcastScreen.route)
+                if (isPlayShow) {
+                    navController.navigate(Route.PodcastScreen.createRoute(podcast.id))
+                } else {
+                    onAddPodcastToPlaylist()
+                }
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -66,12 +73,11 @@ fun CardPodcast(
             modifier = Modifier
                 .size(120.dp)
                 .clip(RoundedCornerShape(16.dp)),
-            model = "${Constants.BASE_URL_DEV}/v1/podcast/thumbnail/${podcast.thumbnail}",
+            model = "${Constants.BASE_URL_DEV}/v1/podcast/thumbnail/${if (isPlayShow) podcast.thumbnail else podcast.thumbnailFilename}",
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
         Column {
-            val painter = painterResource(id = R.drawable.spain)
             AsyncImage(
                 modifier = Modifier
                     .size(25.dp, 15.dp)
@@ -82,7 +88,10 @@ fun CardPodcast(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
+                modifier = if (isPlayShow) Modifier.width(160.dp) else Modifier.width(200.dp),
                 text = podcast.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -137,10 +146,12 @@ fun CardPodcast(
                 )
             }
         }
-        com.example.sekaipodcast.home.presentation.components.CircularIcon(
-            icon = Icons.Default.PlayArrow,
-            contentDescription = "Play",
-            size = 40.dp
-        )
+        if (isPlayShow) {
+            com.example.sekaipodcast.home.presentation.components.CircularIcon(
+                icon = Icons.Default.PlayArrow,
+                contentDescription = "Play",
+                size = 40.dp
+            )
+        }
     }
 }

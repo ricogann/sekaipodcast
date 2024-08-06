@@ -7,6 +7,7 @@ data class Podcast(
     val name: String,
     val podcasts: String,
     val thumbnail: String,
+    val thumbnailFilename: String,
     val title: String,
     val totallikes: Int,
     val totallisten: Int

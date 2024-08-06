@@ -43,7 +43,8 @@ import com.example.sekaipodcast.ui.theme.SekaipodcastTheme
 fun PlaylistInfo(
     modifier: Modifier = Modifier,
     data: DataPlaylistDetail,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onShowDialog: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -93,9 +94,11 @@ fun PlaylistInfo(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = "People",
+                contentDescription = "Add",
                 tint = Color.Black,
-                modifier = Modifier.size(25.dp)
+                modifier = Modifier.size(25.dp).clickable {
+                    onShowDialog()
+                }
             )
             Icon(
                 imageVector = Icons.Outlined.Edit,

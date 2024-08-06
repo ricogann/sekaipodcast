@@ -3,9 +3,12 @@ package com.example.sekaipodcast.playlist.data.repository
 import com.example.sekaipodcast.playlist.data.remote.PlaylistAPI
 import com.example.sekaipodcast.playlist.data.remote.dto.ResponseCreatePlaylist
 import com.example.sekaipodcast.playlist.data.remote.dto.ResponseDeletePlaylist
+import com.example.sekaipodcast.playlist.data.remote.dto.ResponseGetPodcast
 import com.example.sekaipodcast.playlist.data.remote.dto.ResponsePlaylistDetail
 import com.example.sekaipodcast.playlist.data.remote.dto.ResponsePlaylistUser
+import com.example.sekaipodcast.playlist.data.remote.dto.ResponsePodcastToPlaylist
 import com.example.sekaipodcast.playlist.domain.model.CreatePlaylistRequest
+import com.example.sekaipodcast.playlist.domain.model.PodcastToPlaylist
 import com.example.sekaipodcast.playlist.domain.repository.PlaylistRepository
 import javax.inject.Inject
 
@@ -19,6 +22,14 @@ class PlaylistRepositoryImpl @Inject constructor(
 
     override suspend fun getPlaylistUser(userId: String): ResponsePlaylistUser {
         return api.getPlaylistUser(userId)
+    }
+
+    override suspend fun getPodcast(): ResponseGetPodcast {
+        return api.getPodcast()
+    }
+
+    override suspend fun podcastToPlaylist(requestBody: PodcastToPlaylist): ResponsePodcastToPlaylist {
+        return api.addPodcastToPlaylist(requestBody)
     }
 
     override suspend fun getPlaylistDetailUser(playlistId: String): ResponsePlaylistDetail {
