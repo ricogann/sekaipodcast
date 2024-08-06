@@ -1,5 +1,7 @@
 package com.example.sekaipodcast.playlist.presentation.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +48,7 @@ import com.example.sekaipodcast.playlist.presentation.home.components.CardPlayli
 import com.example.sekaipodcast.playlist.presentation.home.components.DialogForm
 import com.example.sekaipodcast.ui.theme.SekaipodcastTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomePlaylistScreen(
     navController: NavController,
@@ -55,7 +58,7 @@ fun HomePlaylistScreen(
     var showDialog by remember { mutableStateOf(false) }
     var description by remember { mutableStateOf(TextFieldValue()) }
     var name by remember { mutableStateOf(TextFieldValue()) }
-    val accountState = "91ceaca6-c228-4b69-99bf-2eeb7d33f224"
+    val accountState = viewModel.id
 
     var nameError by remember { mutableStateOf<String?>(null) }
     var descriptionError by remember { mutableStateOf<String?>(null) }
